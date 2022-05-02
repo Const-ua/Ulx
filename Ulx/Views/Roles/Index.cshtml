@@ -1,0 +1,44 @@
+﻿@model List<Microsoft.AspNetCore.Identity.IdentityRole> 
+
+
+<div class="container p-3 pt-4 col-8">
+    <div class="row pt-4">
+        <div class="col-4">
+            <h2 class="text-primary">Roles</h2>
+        </div>
+        <div class="col-4 text-right">
+            <a class="btn btn-primary" asp-controller ="Roles" asp-action="Create">Add Role</a>
+        </div>
+    </div>
+    <br />
+    @if (Model.Any())
+    {
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>Role</th>
+                <th></th>
+            </tr>
+            <tbody>
+            @foreach (var role in Model)
+            {
+                <tr>
+                    <td>@role.Name</td>
+                    <td>
+                        <div class="text-center">
+                            <div class="w-50 btn-group" role="group">
+                                <form method="post" asp-action="Delete" asp-route-id="@role.Id">
+                                    <input type="submit" value="Delete" class="btn btn-sm btn-danger"/>
+                                </form>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h2>There are no roles yet.</h2>
+    }
+</div>

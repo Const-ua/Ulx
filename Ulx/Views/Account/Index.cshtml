@@ -1,0 +1,44 @@
+﻿@model IEnumerable<User>
+
+
+<div class="container p-3 pt-4 col-8">
+    <div class="row pt-4">
+        <div class="col-4">
+            <h2 class="text-primary">Users list</h2>
+        </div>
+    </div>
+    <br />
+    @if (Model.Any())
+    {
+        <table class="table table-bordered table-striped" style="width:100%">
+            <tr>
+                <th>Email</th>
+                <th>Name</th>
+                <th></th>
+            </tr>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.Email</td>
+                        <td>@user.Name</td>
+                        <td>
+                            <div class="text-center">
+                                <div class="w-50 btn-group" role="group">
+                                    <a class="btn btn-sm btn-primary mx-2" asp-controller="Roles" asp-action="AssignRoles" asp-route-id="@user.Id">User roles</a>
+                                    @*                                <a class="btn btn-sm btn-primary mx-2" asp-action="Edit" asp-route-id="@user.Id">Edit</a>
+                                        <a class="btn btn-sm btn-danger mx-2" asp-action="Delete" asp-route-id="@user.Id">Delete</a>
+                                    *@
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h2>There are no users yet.</h2>
+    }
+</div>

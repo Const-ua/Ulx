@@ -1,0 +1,140 @@
+﻿@model IEnumerable<Ad>
+
+<div id="app" class="container" v-cloak>
+    <h1>Welcome to ULX</h1>
+    <div>
+        <div class="row">
+            <div class="col-3"><a class="btn btn-primary" href="~/Home/Index?page=@ViewBag.CurrentPage&id=@ViewBag.Category&sort=Created_Asc">Sort by date asc</a></div>
+            <div class="col-3"><a class="btn btn-primary" href="~/Home/Index?page=@ViewBag.CurrentPage&id=@ViewBag.Category&sort=Created_Desc">Sort by date desc</a></div>
+            <div class="col-3"><a class="btn btn-primary" href="~/Home/Index?page=@ViewBag.CurrentPage&id=@ViewBag.Category&sort=Price_Asc">Sort by price asc</a></div>
+            <div class="col-3"><a class="btn btn-primary" href="~/Home/Index?page=@ViewBag.CurrentPage&id=@ViewBag.Category&sort=Price_Desc">Sort by price desc</a></div>
+        </div>
+        <br />
+        <ul>
+            @foreach (var ad in Model)
+            {
+                <li style="list-style-type: none">
+                    <div class="card">
+                        <h5 class="card-header">
+                            <span>@ad.Created.ToString("dd-MMMM-yyyy")</span>
+                            <span style="float: right">Цена: @ad.Price</span>
+                        </h5>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <img src="@Url.Action("GetPhoto", "Home", new {ad.Id})" style="border-radius: 5px; border: 1px solid #bbb; width: 150px;" />
+                                </div>
+                                <div class="col-3">
+                                    <h5 class="card-title">@ad.Title</h5>
+                                    <p class="card-text">@ad.Description</p>
+                              
+                                    <button class="btn btn-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal1"
+                                        v-on:click="showAd(@ad.Id)">
+                                        View ad
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+
+    </div>
+    @*Пажинация*@
+    <div>
+        <nav>
+            <ul class="pagination">
+                @{
+                    var FirstPage = (ViewBag.CurrentPage == 1 ? "<li class='page-item disabled'>" : "<li class='page-item'>");
+                    var LiTag = "</li>";
+                }
+                @Html.Raw(FirstPage)
+                <a class="page-link" href="~/Home/Index?page=1&sort=@ViewBag.SortField&id=@ViewBag.Category" tabindex="-1" aria-disabled="true">&laquo;</a>
+                @Html.Raw(LiTag)
+                @{
+                    FirstPage = (ViewBag.CurrentPage == 1 ? "<li class='page-item disabled'>" : "<li class='page-item'>");
+                }
+                @Html.Raw(FirstPage)
+                <a class="page-link" href="~/Home/Index?page=@(ViewBag.CurrentPage == 1 ? 1 : ViewBag.CurrentPage - 1)&sort=@ViewBag.SortField&id=@ViewBag.Category" tabindex="-1" aria-disabled="true">&lt;</a>
+                @Html.Raw(LiTag)
+
+                @{
+                    var VisiblePageTags = (ViewBag.Pages <= WebConstants.PageSize ? ViewBag.Pages : WebConstants.PageSize);
+                }
+                @for (int i = 1; i <= VisiblePageTags; i++)
+                {
+                    if (ViewBag.CurrentPage == i)
+                    {
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="#">@i</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="~/Home/Index?page=@i&sort=@ViewBag.SortField&id=@ViewBag.Category">@i</a>
+                        </li>
+                    }
+                }
+                @{
+                    FirstPage = (ViewBag.CurrentPage == ViewBag.Pages ? "<li class='page-item disabled'>" : "<li class='page-item'>");
+                }
+                @Html.Raw(FirstPage)
+                <a class="page-link" href="~/Home/Index?page=@(ViewBag.CurrentPage == ViewBag.Pages ? ViewBag.Pages : ViewBag.CurrentPage + 1)&sort=@ViewBag.SortFiel&id=@ViewBag.Category" tabindex="-1" aria-disabled="true">&gt;</a>
+                @Html.Raw(LiTag)
+
+                @{
+                    var LastPage = (ViewBag.CurrentPage == ViewBag.Pages ? "<li class='page-item disabled'>" : "<li class='page-item'>");
+                }
+                @Html.Raw(LastPage)
+                <a class="page-link" href="~/Home/Index?page=@ViewBag.Pages&sort=@ViewBag.SortField&id=@ViewBag.Category" tabindex="-1" aria-disabled="true">&raquo;</a>
+                @Html.Raw(LiTag)
+            </ul>
+        </nav>
+    </div>
+
+    @*Modal window*@
+    <div class="modal fade" id="modal1" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-header" id="modalLabel">{{ad.title}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        @*class="d-flex flex-row mb-3"*@
+                        <div class="p-2 w-50">
+                            <div>
+                                <p>{{modalTitle}}</p>
+
+                                <p>{{this.ad.description}}</p>
+                                <p>Price: {{ad.price}}</p>
+                                <ul v-for="file in this.ad.files">
+                                    <li style="list-style-type: none">
+                                      <img v-bind:src="file" style="border: 1px solid #bbb; width: 150px;"/>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <p>Author: <b>{{this.ad.name}}</b></p>
+                    <p>Phone: <b>{{this.ad.phone}}</b></p>
+                    <p>Email: <b>{{this.ad.email}}</b></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts {
+<script type="text/javascript" src="~/js/showAd.js"></script>
+}

@@ -1,0 +1,38 @@
+﻿@using Ulx.Data.Repository.IRepository
+@inject ICategoryRepository _categories
+@{
+    IEnumerable<Category> categories = _categories.GetAll(orderBy:r => r.OrderBy(t=>t.Name));
+}
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Categories&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <li class="dropdown-item">
+            <a asp-controller="Home" asp-action="Index" asp-route-id="0" class="dropdown-item">
+                <span>All categories</span>
+            </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        @if (categories.Any())
+        {
+            foreach (var cat in categories)
+            {
+                <li class="dropdown-item">
+                    <a asp-controller="Home" asp-action="Index" asp-route-id="@cat.Id" class="dropdown-item">
+                        <span>@cat.Name</span>
+                    </a>
+                </li>
+            }
+        }
+        else
+        {
+            <li>
+                <a href="#" class="menu-item">
+                    <span>No categories yet</span>
+                </a>
+            </li>
+        }
+    </ul>
+</li>

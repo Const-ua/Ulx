@@ -1,0 +1,31 @@
+﻿@model Ulx.Models.LoginVM
+
+<form method="post" asp-action="Login">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="border p-3 col-4">
+        <div class="form-outline mb-4">
+            <input type="email" id="Email" class="form-control" asp-for="Email"/>
+            <label class="form-label" for="Email">Email address</label>
+        </div>
+
+        <div class="mb-4">
+            <input type="password" id="password" class="form-control" asp-for="Password"/>
+            <label class="form-label" for="password">Password</label>
+        </div>
+        <div class="row mb-4">
+            <div class="col d-flex justify-content-center">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="@Model.RememberMe" id="RememberMe" asp-for="RememberMe"/>
+                    <label class="form-check-label" for="RememberMe"> Remember me </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mb-6">Sign in</button>
+        </div>
+
+
+        <div class="text-center">
+            <p>Not a member?<a asp-action="Register">Register</a></p>
+        </div>
+    </div>
+
+</form>

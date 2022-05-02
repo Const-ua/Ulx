@@ -1,0 +1,114 @@
+﻿
+<div id="app" v-cloak>
+    <h1>{{title}}</h1>
+    <button class="btn btn-primary m-2  float-end"
+            data-bs-toggle="modal"
+            data-bs-target="#modal1"
+            @@click="addButtonClick()">
+        Add category
+    </button>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th style="text-align:right">Options</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-if="categories.length===0">
+            <td>No categories yet!</td>
+            <td></td>
+        </tr>
+        <tr v-for="cat in categories">
+            <td>{{cat.name}}</td>
+            <td style="text-align:right">
+                <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modal1"
+                        @@click="editButtonClick(cat)">
+                    Edit
+                </button>
+
+                <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalConfirm"
+                        @@click="deleteButtonClick(cat)">
+                    Delete
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    
+      <div class="modal fade" id="modal1" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-header" id="modalLabel">{{modalTitle}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex flex-row mb-3">
+                        <div class="p-2 w-50">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Name</span>
+                                <input type="text" class="form-control" v-model="categoryName" v-on:blur="checkName()" ref="categoryName"/>
+                            </div>
+                            <div>
+                                <span v-if="errorList.find( errorList => errorList.name==='errorName')" class="text-danger">
+                                    {{errorList.find( errorList => errorList.name==='errorName').message}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary"
+                                data-bs-dismiss="modal"
+                                v-if="categoryId==0"
+                                ref="okButton"
+                                @@click="addCategory()"
+                                :disabled=isDisabled>
+                            Add
+                        </button>
+                        <button type="submit" class="btn btn-primary"
+                                data-bs-dismiss="modal"
+                                v-if="categoryId!=0"
+                                ref="okButton"
+                                @@click="updateCategory()"
+                                :disabled=isDisabled>
+                            Update
+                        </button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @@click="clearErrorList()">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="modalConfirm" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete category&nbsp;{{categoryName}}?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                            @@click="deleteCategory(categoryId)">
+                        Delete
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+<script type="text/javascript" src="~/js/category.js"></script>
+}

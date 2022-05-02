@@ -1,0 +1,152 @@
+﻿@model AdViewModel;
+@{
+    var title = "Add new ad";
+}
+<div id="app" v-cloak>
+    <form method="post" enctype="multipart/form-data" ref="form" asp-controller="Home" asp-action="SaveAd">
+        @if (Model.Id != 0)
+        {
+            <input asp-for="Id" hidden />
+            title = "Edit ad";
+        }
+        <div class="border p-3">
+            <div class="row">
+                <h2 class="text-info pl-3">@title</h2>
+            </div>
+            <div class="row">
+                <div class="col-8">
+                    <div class="row">
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <label>Title</label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="Title" class="form-control" id="Title" ref="adTitle" v-on:blur="checkTitle()" />
+                                <div>
+                                    <span v-if="errorList.find( errorList => errorList.name==='errorTitle')" class="text-danger">
+                                        {{errorList.find( errorList => errorList.name==='errorTitle').message}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div v class="row mb-3">
+                            <div class="col-4">
+                                Image 1
+                            </div>
+                            <div class="col-8">
+                                <input type="file" name="File1" id="File1" class="form-control" ref="image1" v-on:change="getFile1()" />
+                            </div>
+                            <div class="col-4">
+                                Image 2
+                            </div>
+                            <div class="col-8">
+                                <input  type="file" name="File" id="File2" class="form-control" ref="image2" v-on:change="getFile2()" />
+                            </div>
+                            <div class="col-4">
+                                Image 3
+                            </div>
+                            <div class="col-8">
+                                <input type="file" name="File" id="File3" class="form-control" ref="image3" v-on:change="getFile3()" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <label>Description</label>
+                            </div>
+                            <div class="col-8">
+                                <textarea asp-for="Description" class="form-control" id="Description" ref="adDescription" v-on:blur="checkDescription()"></textarea>
+                                <div>
+                                    <span v-if="errorList.find( errorList => errorList.name==='errorDescription')" class="text-danger">
+                                        {{errorList.find( errorList => errorList.name==='errorDescription').message}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <label>Price</label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="Price" class="form-control" id="Price" ref="adPrice" v-on:blur="checkPrice()" />
+                                <div>
+                                    <span v-if="errorList.find( errorList => errorList.name==='errorPrice')" class="text-danger">
+                                        {{errorList.find( errorList => errorList.name==='errorPrice').message}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div v class="row mb-3">
+                            <div class="col-4">
+                                <label>Category</label>
+                            </div>
+                            <div class="col-8">
+                                @*                                <select asp-for="CategoryId" asp-items="@ViewBag.Categories.Name" class="form-control" id="Category">
+                                    </select>*@
+                                <select class="form-control" id="Category" asp-for="CategoryId">
+                                    @foreach (var cat in ViewBag.Categories)
+                                    {
+                                            <option class="form-control" value="@cat.Id">@cat.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-8 offset-4 row">
+                            <div class="col">
+                                @if (Model.Id != 0)
+                                {
+                                    <button type="submit" class="btn btn-primary w-100"
+                                        ref="submit1"
+                                        v-on:click="validateForm()"
+                                        :disabled="isDisabled">
+                                        Update
+                                    </button>
+                                }
+                                else
+                                {
+                                //Add
+                                    <button type="submit" class="btn btn-primary w-100"
+                                            ref="submit1"
+                                            v-on:click="validateForm()"
+                                            :disabled="isDisabled">
+                                        Create
+                                    </button>
+                                }
+                            </div>
+                            <div class="col">
+                                <a asp-controller="Home" asp-action="Ads" class="btn btn-primary w-100">
+                                    Back
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    @if (Model.Id != 0)
+                    {
+                        <img src="~/Home/GetPhoto?id=@Model.Id&count=0" style="border-radius: 5px; border: 1px solid #bbb; width: 150px;" ref="image1" id="image1" />
+                        <img src="~/Home/GetPhoto?id=@Model.Id&count=1" style="border-radius: 5px; border: 1px solid #bbb; width: 150px;" ref="image2" id="image2" />
+                        <img src="~/Home/GetPhoto?id=@Model.Id&count=2" style="border-radius: 5px; border: 1px solid #bbb; width: 150px;" ref="image3" id="image3" />
+                    }
+                    else
+                    {
+                        <img src="/images/NoPhoto.jpg" style="border-radius: 5px; border: 1px solid #bbb; width: 150px;" ref="image1" id="image1" />
+                        <img src="/images/NoPhoto.jpg" style="border-radius: 5px; border: 1px solid #bbb; width: 150px;" ref="image2" id="image2" />
+                        <img src="/images/NoPhoto.jpg" style="border-radius: 5px; border: 1px solid #bbb; width: 150px;" ref="image3" id="image3" />
+                    }
+                    {{showImage}}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+<script type="text/javascript" src="~/js/ads.js"></script>
+}

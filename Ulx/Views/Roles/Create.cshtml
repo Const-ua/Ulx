@@ -1,0 +1,39 @@
+﻿@model string
+
+<form method="post" asp-action="Create">
+    <div class="border p-3 col-8" >
+        <div asp-validation-summary="All"></div>
+        <div>
+            <h2 class="text-info p-3">
+                Add role
+            </h2>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-3">
+                        <label for="name" class="form-label">Role name</label>
+                    </div>
+                    <div class="col-5">
+                        <input type="text" name="name" class="form-control" id="name" />
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-8 offset-3 row">
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-success" asp-action="Index">Back</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-4">
+            </div>
+        </div>
+    </div>
+
+</form>
